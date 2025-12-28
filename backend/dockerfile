@@ -1,0 +1,26 @@
+FROM node:20-alpine 
+
+# Définir le repertoire de travail 
+WORKDIR /app 
+
+#Configuration de la variable d'environement PATH 
+ENV PATH /app/node_modules/.bin:$PATH
+
+# Installation des dépendances de l'application
+# Copie des fichiers de dépendances dans le conteneur
+COPY ./package.json ./
+COPY ./package-lock.json ./
+
+# Installation de toutes les dépendances listées dans package.json
+# Cette étape est mise en cache par Docker si package.json n'a pas changé
+RUN npm install
+
+# Copie du reste du code source
+COPY . .
+
+# Exposition du port 3000
+# Indique que le conteneur écoute sur le port 3000 (nécessaire pour le mapping dans docker-compose)
+EXPOSE 3000
+
+#Commande pour démarrer l'application 
+CMD ["npm", "start"]
